@@ -21,18 +21,18 @@ class AppServiceProvider extends ServiceProvider
 
         Schema::defaultStringLength(191);
 
-        User::created(function ($user) {
-            retry(5, function () use ($user) {
-                Mail::to($user->email)->send(new UserCreated($user));
-            }, 100);
-        });
-
-        User::updated(function ($user) {
-            if ($user->isDirty('email')) {
-                Mail::to($user->email)->send(new UserMailChanged($user));
-            }
-
-        });
+//        User::created(function ($user) {
+//            retry(5, function () use ($user) {
+//                Mail::to($user->email)->send(new UserCreated($user));
+//            }, 100);
+//        });
+//
+//        User::updated(function ($user) {
+//            if ($user->isDirty('email')) {
+//                Mail::to($user->email)->send(new UserMailChanged($user));
+//            }
+//
+//        });
     }
 
     /**

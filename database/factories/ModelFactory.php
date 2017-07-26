@@ -13,6 +13,7 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 use App\Category;
+use App\Post;
 use App\Product;
 use App\Seller;
 use App\Transaction;
@@ -28,7 +29,8 @@ $factory->define(User::class, function (Faker\Generator $faker) {
         'remember_token' => str_random(10),
         'verified' => $verified = $faker->randomElement([User::VERIFIED_USER, User::UNVERIFIED_USER]),
         'verification_token' => $verified == User::UNVERIFIED_USER ? User::generateVerificationCode() : null,
-        'admin' => $verified = $faker->randomElement([User::ADMIN_USER, User::REGULAR_USER])
+        'admin' => $verified = $faker->randomElement([User::ADMIN_USER, User::REGULAR_USER]),
+        'image_thumb'=>$faker->numberBetween(1,10).".png",
     ];
 });
 
@@ -42,27 +44,16 @@ $factory->define(Category::class, function (Faker\Generator $faker) {
 });
 
 
-$factory->define(Product::class, function (Faker\Generator $faker) {
+$factory->define(Post::class, function (Faker\Generator $faker) {
 
     return [
-        'name' => $faker->word,
+        'title' => $faker->word,
         'description' => $faker->paragraph(1),
-        'quantity' =>$faker->numberBetween(1,10),
-        'status' => $faker->randomElement([Product::AVAILABLE_PRODUCT,Product::AVAILABLE_PRODUCT]),
-        'image' =>$faker->randomElement(['1.jpg','2.jpg','3.jpg']),
-        'seller_id' => User::all()->random()->id,
+        'cover_image' =>$faker->randomElement(['1.jpg','2.jpg','3.jpg','4.jpg','5.jpg','6.jpg','7.jpg','8.jpg','9.jpg','10.jpg']),
+        'user_id' => User::all()->random()->id,
     ];
 });
 
 
-$factory->define(Transaction::class, function (Faker\Generator $faker) {
 
-    $seller = Seller::has('products')->get()->random();
-    $buyer  = User::all()->except($seller->id)->random();
-    return [
-        'quantity' =>$faker->numberBetween(1,3),
-        'buyer_id' => $buyer->id,
-        'product_id' => $seller->products->random()->id,
-    ];
-});
 
