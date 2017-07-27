@@ -31,6 +31,7 @@ trait ApiResponse
 
         $collection = $this->filterData($collection, $transformer);
         $collection = $this->sortData($collection, $transformer);
+        $collection = $this->orderBy($collection);
         $collection = $this->paginate($collection);
         $collection = $this->transformData($collection, $transformer);
         $collection = $this->cacheResponse($collection);
@@ -83,7 +84,7 @@ trait ApiResponse
         ];
         Validator::validate(request()->all(), $rules);
         $page = LengthAwarePaginator::resolveCurrentPage();
-        $perPage = 15;
+        $perPage = config('my_conf.pagination_limit');
         if (request()->has('per_page')) {
             $perPage = (int)request()->per_page;
         }
@@ -93,6 +94,22 @@ trait ApiResponse
         ]);
         $paginated->appends(request()->all());
         return $paginated;
+    }
+
+    protected function orderBy(Collection $collection){
+        $rules = [
+            'order_by' => 'string|in:asc,desc'
+        ];
+        Validator::validate(request()->all(), $rules);
+        if(request()->has('order_by')){
+            if(request()->order_by=='desc'){
+                return   $collection->reverse();
+            }else{
+               return $collection;
+            }
+        }else{
+            return $collection->reverse();
+        }
     }
 
     public function cacheResponse($data)

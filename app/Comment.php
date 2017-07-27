@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Transformers\CategoryTransformer;
 use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
@@ -12,6 +13,8 @@ class Comment extends Model
         'user_id',
         'post_id'
     ];
+
+    public $transformer = CategoryTransformer::class;
     public function post()
     {
         return $this->belongsTo(Post::class);
