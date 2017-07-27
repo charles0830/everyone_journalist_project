@@ -39,7 +39,12 @@ class CategoryController extends ApiController
      */
     public function store(Request $request)
     {
-        //
+        $rules = [
+            'name'=>'required'
+        ];
+        $this->validate($request, $rules);
+        $category = Category::create($request->only(['name','description']));
+        return $this->showOne($category);
     }
 
     /**
@@ -73,7 +78,23 @@ class CategoryController extends ApiController
      */
     public function update(Request $request, Category $category)
     {
-        //
+
+        $rules = [
+            'name' => 'required',
+        ];
+        $this->validate($request, $rules);
+        if ($request->has('name')) {
+            $category->name = $request->name;
+        }
+
+        if ($request->has('description')) {
+            $category->description = $request->description;
+        }
+        if (!$category->isDirty()) {
+            return $this->errorResponse('you need to specify a diffenrt value to update code', 422);
+        }
+        $category->save();
+        return $this->showOne($category);
     }
 
     /**
@@ -84,6 +105,7 @@ class CategoryController extends ApiController
      */
     public function destroy(Category $category)
     {
-        //
+        $category->delete();
+        return $this->showOne($category);
     }
 }

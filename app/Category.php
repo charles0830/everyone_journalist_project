@@ -9,8 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Category extends Model
 {
     protected $fillable = [
-        'name',
-        'description'
+        'name'
     ];
 
     public $transformer = CategoryTransformer::class;
