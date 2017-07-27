@@ -13,6 +13,7 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 use App\Category;
+use App\Comment;
 use App\Post;
 use App\Product;
 use App\Seller;
@@ -51,6 +52,15 @@ $factory->define(Post::class, function (Faker\Generator $faker) {
         'description' => $faker->paragraph(1),
         'cover_image' =>$faker->randomElement(['1.jpg','2.jpg','3.jpg','4.jpg','5.jpg','6.jpg','7.jpg','8.jpg','9.jpg','10.jpg']),
         'user_id' => User::all()->random()->id,
+    ];
+});
+
+$factory->define(Comment::class, function (Faker\Generator $faker) {
+    static $post_id;
+    return [
+        'description' => $faker->paragraph(1),
+        'user_id' => User::all()->random()->id,
+        'post_id' =>$post_id
     ];
 });
 

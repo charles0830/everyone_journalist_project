@@ -47,6 +47,11 @@ class User extends Authenticatable
         'verification_token',
     ];
 
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
     public function setNameAttribute($value)
     {
         $this->attributes['name'] = strtolower($value);
