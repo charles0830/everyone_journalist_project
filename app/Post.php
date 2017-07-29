@@ -14,7 +14,8 @@ class Post extends Model
     protected $fillable = [
         'title',
         'description',
-        'user_id'
+        'user_id',
+        'cover_image'
     ];
 
     public $transformer = PostTransformer::class;

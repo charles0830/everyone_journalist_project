@@ -61,6 +61,12 @@ return [
             'visibility' => 'public',
         ],
 
+        'post_images' => [
+            'driver' => 'local',
+            'root' => public_path('img/post'),
+            'visibility' => 'public',
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_KEY'),

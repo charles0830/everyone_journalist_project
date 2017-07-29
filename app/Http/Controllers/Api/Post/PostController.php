@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Api\Post;
 
 use App\Http\Controllers\ApiController;
 use App\Post;
+use function GuzzleHttp\Promise\all;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends ApiController
 {
@@ -43,7 +45,23 @@ class PostController extends ApiController
      */
     public function store(Request $request)
     {
-        //
+        $rules = [
+            'title' => 'required',
+            'description' => 'required|min:20',
+            'cover_image' => 'required|image'
+        ];
+        $this->validate($request, $rules);
+
+        $data = $request->all();
+
+        if ($request->hasFile('cover_image')) {
+            $data['cover_image'] = $request->cover_image->store('','post_images');
+        }
+        $data['user_id'] = 1;
+        $post = Post::create($data);
+        return $this->showOne($post);
+
+
     }
 
     /**
@@ -79,7 +97,25 @@ class PostController extends ApiController
      */
     public function update(Request $request, Post $post)
     {
-        //
+        $rules = [
+            'description' => 'min:20',
+            'cover_image' => 'image'
+        ];
+
+        $this->validate($request, $rules);
+        $post->fill($request->intersect([
+            'title','description','cover_image'
+        ]));
+
+        if($request->hasFile('image')){
+            Storage::delete($post->image,'post_images');
+            $post->image = $request->cover_image->store('','post_images');
+        }
+        if($post->isClean()){
+            return $this->errorResponse('You need to specify a different value to update',422);
+        }
+        $post->save();
+        return $this->showOne($post);
     }
 
     /**
