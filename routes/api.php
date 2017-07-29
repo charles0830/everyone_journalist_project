@@ -29,6 +29,7 @@
 
     Route::resource('categories','Api\Category\CategoryController');
     Route::resource('categories.posts','Api\Category\CategoryPostController',['only'=>['index']]);
+    Route::resource('posts','Api\Post\PostController');
 
 
 

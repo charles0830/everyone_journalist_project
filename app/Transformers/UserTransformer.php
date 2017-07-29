@@ -22,6 +22,7 @@ class UserTransformer extends TransformerAbstract
             'email' => (string) $user->email,
             'isVerified' => (int) $user->verified,
             'isAdmin' => ($user->admin==='true'),
+            'cover_photo' => (string) $user->image_thumb,
             'creationDate' => (string) $user->created_at,
             'lastChange' => (string) $user->updated_at,
             'deletedDate' => isset($user->deleted_at)? (string) $user->deleted_at:null,

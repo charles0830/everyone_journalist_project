@@ -27,14 +27,12 @@ trait ApiResponse
             return $this->successResponse(['data' => $collection], $code);
         }
         $transformer = $collection->first()->transformer;
-
-
+        $collection = $this->orderBy($collection);
         $collection = $this->filterData($collection, $transformer);
         $collection = $this->sortData($collection, $transformer);
-        $collection = $this->orderBy($collection);
         $collection = $this->paginate($collection);
         $collection = $this->transformData($collection, $transformer);
-        $collection = $this->cacheResponse($collection);
+      //  $collection = $this->cacheResponse($collection);
         return $this->successResponse($collection, $code);
     }
 
@@ -96,18 +94,19 @@ trait ApiResponse
         return $paginated;
     }
 
-    protected function orderBy(Collection $collection){
+    protected function orderBy(Collection $collection)
+    {
         $rules = [
             'order_by' => 'string|in:asc,desc'
         ];
         Validator::validate(request()->all(), $rules);
-        if(request()->has('order_by')){
-            if(request()->order_by=='desc'){
-                return   $collection->reverse();
-            }else{
-               return $collection;
+        if (request()->has('order_by')) {
+            if (request()->order_by == 'desc') {
+                return $collection->reverse();
+            } else {
+                return $collection;
             }
-        }else{
+        } else {
             return $collection->reverse();
         }
     }
