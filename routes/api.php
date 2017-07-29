@@ -29,6 +29,7 @@
 
     Route::resource('categories','Api\Category\CategoryController');
     Route::resource('categories.posts','Api\Category\CategoryPostController',['only'=>['index']]);
+    Route::resource('posts.comments','Api\Post\PostCommentController',['only'=>['store','update']]);
     Route::resource('posts','Api\Post\PostController');
 
 
