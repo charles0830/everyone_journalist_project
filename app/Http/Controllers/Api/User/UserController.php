@@ -17,6 +17,7 @@ class UserController extends ApiController
      */
     public function index()
     {
+        $this->middleware('auth:api');
         $user = User::all();
         return $this->showAll($user);
     }
@@ -142,7 +143,7 @@ class UserController extends ApiController
         }
         $user->verification_token = User::generateVerificationCode();
         $user->save();
-        // Mail::to($user)->send(new UserCreated($user));
+         Mail::to($user)->send(new UserCreated($user));
         return $this->showMessage("The verification email send");
     }
 
@@ -158,8 +159,8 @@ class UserController extends ApiController
         $response = $client->post(route('oauth.token'), [
             'form_params' => [
                 'grant_type' => 'password',
-                'client_id' => env('client_id'),
-                'client_secret' => env('client_secret'),
+                'client_id' => env('client_id',3),
+                'client_secret' => env('client_secret','E51pmXN0efl2soSQUJpmW4M6WVFaamDlCXQCifnU'),
                 'username' => $request->username,
                 'password' => $request->password,
             ],

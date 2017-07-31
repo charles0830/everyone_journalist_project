@@ -18,9 +18,7 @@ class User extends Authenticatable
     const ADMIN_USER = 'true';
     const REGULAR_USER = 'false';
 
-    public function findForPassport($username) {
-        return $this->where('id', $username)->first();
-    }
+
 
 
     public $transformer = UserTransformer::class;
@@ -52,6 +50,11 @@ class User extends Authenticatable
         'remember_token',
         'verification_token',
     ];
+
+
+    public function findForPassport($identifier) {
+        return User::orWhere('email', $identifier)->orWhere('phone_no', $identifier)->where('verified',1)->first();
+    }
 
     public function comments()
     {

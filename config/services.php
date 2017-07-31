@@ -15,8 +15,8 @@ return [
     */
 
     'mailgun' => [
-        'domain' => env('MAILGUN_DOMAIN'),
-        'secret' => env('MAILGUN_SECRET'),
+        'domain' => env('MAILGUN_DOMAIN','everyonejournalist.dev'),
+        'secret' => env('MAILGUN_SECRET','key-eb0a1879f218a8ce87839bc8d2dca9c9'),
     ],
 
     'ses' => [

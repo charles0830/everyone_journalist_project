@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'driver' => env('MAIL_DRIVER', 'smtp'),
+    'driver' => env('MAIL_DRIVER', 'mailgun'),
 
     /*
     |--------------------------------------------------------------------------
@@ -29,7 +29,7 @@ return [
     |
     */
 
-    'host' => env('MAIL_HOST', 'smtp.mailtrap.io'),
+    'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
 
     /*
     |--------------------------------------------------------------------------
@@ -42,7 +42,7 @@ return [
     |
     */
 
-    'port' => env('MAIL_PORT', 2525),
+    'port' => env('MAIL_PORT', 587),
 
     /*
     |--------------------------------------------------------------------------
@@ -84,9 +84,9 @@ return [
     |
     */
 
-    'username' => env('MAIL_USERNAME','91695cce088ec5'),
+    'username' => env('MAIL_USERNAME','postmaster@sandbox31c6fda5878a439c960ed69908dc5b92.mailgun.org'),
 
-    'password' => env('MAIL_PASSWORD','326c94e72e73fc'),
+    'password' => env('MAIL_PASSWORD','3a2400dbab5cd54c24542f9406c50e11'),
 
     /*
     |--------------------------------------------------------------------------

@@ -35,6 +35,11 @@
     Route::name('verify')->get('users/verify/{token}','Api\User\UserController@verify');
     Route::name('resend')->get('users/{user}/resend','Api\User\UserController@resend');
 
+Route::post('user/login','Api\User\userController@login')->name('oauth.login');
+//Route::post('user/refresh_token','User\userController@getRefreshToken')->name('oauth.refresh');
+Route::post('user/logout','Api\User\userController@logout')->name('oauth.logout');
+Route::post('oauth/token','\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken')->name('oauth.token');
+
 
 
 //Route::resource('categories.products','Category\CategoryProductController',['only'=>['index']]);
