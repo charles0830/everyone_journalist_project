@@ -43,7 +43,7 @@ class UserController extends ApiController
             'name' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6|confirmed',
-            'phone_no'=>'required|min:10|numeric',
+            'phone_no'=>'required|min:10|numeric|unique:users',
             'image_thumb'=>'sometimes|required|image'
         ];
         $this->validate($request, $rules);
