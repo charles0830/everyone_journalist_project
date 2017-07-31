@@ -18,6 +18,10 @@ class User extends Authenticatable
     const ADMIN_USER = 'true';
     const REGULAR_USER = 'false';
 
+    public function findForPassport($username) {
+        return $this->where('id', $username)->first();
+    }
+
 
     public $transformer = UserTransformer::class;
 
@@ -33,7 +37,9 @@ class User extends Authenticatable
         'password',
         'verified',
         'verification_token',
-        'admin'
+        'admin',
+        'phone_no',
+        'image_thumb'
     ];
 
     /**

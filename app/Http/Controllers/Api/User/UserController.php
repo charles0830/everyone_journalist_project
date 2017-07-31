@@ -42,14 +42,22 @@ class UserController extends ApiController
         $rules = [
             'name' => 'required',
             'email' => 'required|email|unique:users',
-            'password' => 'required|min:6|confirmed'
+            'password' => 'required|min:6|confirmed',
+            'phone_no'=>'required|min:10|numeric',
+            'image_thumb'=>'sometimes|required|image'
         ];
         $this->validate($request, $rules);
         $data = $request->all();
+
         $data['password'] = bcrypt($request->password);
         $data['verified'] = User::UNVERIFIED_USER;
         $data['verification_token'] = User::generateVerificationCode();
         $data['admin'] = User::REGULAR_USER;
+        if ($request->hasFile('image_thumb')) {
+            $data['image_thumb'] = $request->image_thumb->store('');
+        }else{
+            $data['image_thumb'] = null;
+        }
         $user = User::create($data);
         return $this->showOne($user);
     }
@@ -115,7 +123,8 @@ class UserController extends ApiController
      */
     public function destroy(User $user)
     {
-        //
+        $user->delete();
+        $this->showOne($user);
     }
 
     public function verify($token)
@@ -123,6 +132,7 @@ class UserController extends ApiController
         $user = User::where('verification_token', $token)->firstOrFail();
         $user->verified = User::VERIFIED_USER;
         $user->verification_token = null;
+        $user->save();
         return $this->showMessage('The account has been verified successfully');
     }
     public function resend(User $user)
@@ -130,7 +140,9 @@ class UserController extends ApiController
         if ($user->isVerified()) {
             return $this->errorResponse("this user is already verified", 409);
         }
-        Mail::to($user)->send(new UserCreated($user));
+        $user->verification_token = User::generateVerificationCode();
+        $user->save();
+        // Mail::to($user)->send(new UserCreated($user));
         return $this->showMessage("The verification email send");
     }
 

@@ -32,6 +32,8 @@
     Route::resource('posts.comments','Api\Post\PostCommentController',['only'=>['store','update']]);
     Route::resource('posts','Api\Post\PostController');
     Route::resource('users','Api\User\UserController');
+    Route::name('verify')->get('users/verify/{token}','Api\User\UserController@verify');
+    Route::name('resend')->get('users/{user}/resend','Api\User\UserController@resend');
 
 
 
