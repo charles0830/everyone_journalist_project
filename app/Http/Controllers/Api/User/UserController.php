@@ -27,7 +27,6 @@ class UserController extends ApiController
 
     public function index()
     {
-        $this->middleware('auth:api');
         $user = User::all();
         return $this->showAll($user);
     }
