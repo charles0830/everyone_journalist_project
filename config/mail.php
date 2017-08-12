@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'driver' => env('MAIL_DRIVER', 'mailgun'),
+    'driver' => env('MAIL_DRIVER', 'sparkpost'),
 
     /*
     |--------------------------------------------------------------------------
@@ -29,7 +29,7 @@ return [
     |
     */
 
-    'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
+    'host' => env('MAIL_HOST', 'smtp.sparkpostmail.com'),
 
     /*
     |--------------------------------------------------------------------------
@@ -71,7 +71,7 @@ return [
     |
     */
 
-    'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+    'encryption' => env('MAIL_ENCRYPTION', 'STARTTLS'),
 
     /*
     |--------------------------------------------------------------------------
@@ -84,9 +84,9 @@ return [
     |
     */
 
-    'username' => env('MAIL_USERNAME','postmaster@sandbox31c6fda5878a439c960ed69908dc5b92.mailgun.org'),
+    'username' => env('MAIL_USERNAME','SMTP_Injection'),
 
-    'password' => env('MAIL_PASSWORD','3a2400dbab5cd54c24542f9406c50e11'),
+    'password' => env('MAIL_PASSWORD','973c1f63cbaaca1e0b3f3fa14513b034918dd28b'),
 
     /*
     |--------------------------------------------------------------------------
