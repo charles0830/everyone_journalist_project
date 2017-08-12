@@ -11,10 +11,20 @@ use Illuminate\Support\Facades\Mail;
 class UserController extends ApiController
 {
     /**
+     * UserController constructor.
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['only' => ['index']]);
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
+
+
     public function index()
     {
         $this->middleware('auth:api');
