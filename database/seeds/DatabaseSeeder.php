@@ -26,9 +26,9 @@ class DatabaseSeeder extends Seeder
         Comment::truncate();
         DB::table('category_post')->truncate();
 
-        $userQuantity = 200;
-        $categoryQuantatity = 30;
-        $postQuantity = 1000;
+        $userQuantity = 50;
+        $categoryQuantatity = 15;
+        $postQuantity = 100;
         $transactionQuantity = 1000;
 
         factory(User::class, $userQuantity)->create();
