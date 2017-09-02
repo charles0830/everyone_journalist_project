@@ -32,7 +32,7 @@ class DatabaseSeeder extends Seeder
 
         $userQuantity = 10;
         $categoryQuantatity = 3;
-        $postQuantity = 10;
+        $postQuantity = 50;
         $transactionQuantity = 1000;
 
         factory(User::class, $userQuantity)->create();
