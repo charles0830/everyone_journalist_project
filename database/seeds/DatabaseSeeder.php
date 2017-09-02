@@ -39,14 +39,14 @@ class DatabaseSeeder extends Seeder
         factory(Category::class, $categoryQuantatity)->create();
         factory(Post::class, $postQuantity)->create()->each(
             function ($post) {
-                $categories = Category::all()->random(mt_rand(1, 5))->pluck('id');
+                $categories = Category::all()->random(mt_rand(1, 2))->pluck('id');
                 $post->categories()->attach($categories);
             }
         );
 
 
         Post::all()->each(function($post,$key){
-            factory(Comment::class,rand(1,10))->create([
+            factory(Comment::class,rand(1,4))->create([
                 'post_id'=>$post->id
             ]);
 
