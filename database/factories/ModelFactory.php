@@ -31,6 +31,7 @@ $factory->define(User::class, function (Faker\Generator $faker) {
         'verified' => $verified = $faker->randomElement([User::VERIFIED_USER, User::UNVERIFIED_USER]),
         'verification_token' => $verified == User::UNVERIFIED_USER ? User::generateVerificationCode() : null,
         'admin' => $verified = $faker->randomElement([User::ADMIN_USER, User::REGULAR_USER]),
+        'phone_no' => $faker->phoneNumber,
         'image_thumb'=>$faker->numberBetween(1,10).".png",
     ];
 });

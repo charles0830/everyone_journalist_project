@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function () {
-//    return "hello wrold";
+    return "hello wrold";
 
 });
 
