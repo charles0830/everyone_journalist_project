@@ -18,7 +18,10 @@ class DatabaseSeeder extends Seeder
     {
         // $this->call(UsersTableSeeder::class);
 
-        DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+       if(env('DB_CONNECTION')!="pgsql"){
+           DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+       }
+
 
         User::truncate();
         Category::truncate();
