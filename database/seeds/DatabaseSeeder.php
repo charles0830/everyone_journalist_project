@@ -20,13 +20,14 @@ class DatabaseSeeder extends Seeder
 
        if(env('DB_CONNECTION')!="pgsql"){
            DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+           User::truncate();
+           Category::truncate();
+           Post::truncate();
+           Comment::truncate();
        }
 
 
-        User::truncate();
-        Category::truncate();
-        Post::truncate();
-        Comment::truncate();
+
         DB::table('category_post')->truncate();
 
         $userQuantity = 50;
