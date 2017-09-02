@@ -11,10 +11,11 @@
         "laravel/framework": "5.4.*",
         "laravel/passport": "^2.0",
         "laravel/tinker": "~1.0",
-        "spatie/laravel-fractal": "^4.0"
+        "spatie/laravel-fractal": "^4.0",
+        "fzaninotto/faker": "~1.4"
     },
     "require-dev": {
-        "fzaninotto/faker": "~1.4",
+
         "laravel/homestead": "^5.4",
         "mockery/mockery": "0.9.*",
         "phpunit/phpunit": "~5.7"
