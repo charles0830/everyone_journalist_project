@@ -153,7 +153,9 @@ class UserController extends ApiController
         }
         $user->verification_token = User::generateVerificationCode();
         $user->save();
-         Mail::to($user)->send(new UserCreated($user));
+        if (env('APP_ENV' != 'local','local')) {
+            Mail::to($user)->send(new UserCreated($user));
+        }
         return $this->showMessage("The verification email send");
     }
 
