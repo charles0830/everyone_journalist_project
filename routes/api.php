@@ -26,69 +26,34 @@
  * Categories
  */
 
+/*
+ * registration and login route
+ */
+Route::post('registration', 'Api\User\UserController@store')->name('user.registration');
+Route::get('users/{user}/resend', 'Api\User\UserController@resend')->name('resend');
+Route::name('verify')->get('users/verify/{token}', 'Api\User\UserController@verify');
+Route::post('login', 'Api\User\userController@login')->name('oauth.login');
+Route::group(['middleware' => 'auth:api'], function () {
+    Route::resource('users', 'Api\User\UserController', ['except' => 'store']);
+});
 
-    Route::resource('categories','Api\Category\CategoryController');
-    Route::resource('categories.posts','Api\Category\CategoryPostController',['only'=>['index']]);
-    Route::resource('posts.comments','Api\Post\PostCommentController',['only'=>['store','update']]);
-    Route::resource('posts','Api\Post\PostController');
-    Route::resource('users','Api\User\UserController');
-    Route::name('verify')->get('users/verify/{token}','Api\User\UserController@verify');
-    Route::name('resend')->get('users/{user}/resend','Api\User\UserController@resend');
+Route::resource('posts', 'Api\Post\PostController');
 
-Route::post('user/login','Api\User\userController@login')->name('oauth.login');
+
+Route::group(['middleware' => 'auth:api'], function () {
+    Route::resource('posts.comments', 'Api\Post\PostCommentController', ['only' => ['store', 'update','destroy']]);
+});
+
+
+Route::resource('categories', 'Api\Category\CategoryController');
+Route::resource('categories.posts', 'Api\Category\CategoryPostController', ['only' => ['index']]);
+
+
+
+
 //Route::post('user/refresh_token','User\userController@getRefreshToken')->name('oauth.refresh');
-Route::post('user/logout','Api\User\userController@logout')->name('oauth.logout');
-Route::post('oauth/token','\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken')->name('oauth.token');
+Route::post('user/logout', 'Api\User\userController@logout')->name('oauth.logout');
+Route::post('user/refresh_token', 'Api\User\userController@getRefreshToken')->name('oauth.refresh');
+Route::post('oauth/token', '\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken')->name('oauth.token');
 
 
-
-//Route::resource('categories.products','Category\CategoryProductController',['only'=>['index']]);
-//Route::resource('categories.sellers','Category\CategorySellerController',['only'=>['index']]);
-//Route::resource('categories.transactions','Category\CategoryTransactionController',['only'=>['index']]);
-//Route::resource('categories.buyers','Category\CategoryBuyerController',['only'=>['index']]);
-///*
-// * Products
-// */
-//Route::resource('products','Product\ProductController');
-//Route::resource('products.transactions','Product\ProductTransactionController',['only'=>['index']]);
-//Route::resource('products.buyers','Product\ProductBuyerController',['only'=>['index']]);
-//Route::resource('products.categories','Product\ProductCategoryController',['except'=>['create','show','edit']]);
-//Route::resource('products.buyers.transactions','Product\ProductBuyerTransactionController',['only'=>['store']]);
-///*
-// * Transections
-// */
-//Route::resource('transactions','Transaction\TransactionController');
-//
-//
-///*
-// * Transections
-// */
-//Route::resource('transactions.categories','Transaction\TransactionCategoryController',['only'=>['index']]);
-//Route::resource('transactions.sellers','Transaction\TransactionSellerController',['only'=>['index']]);
-//
-//
-//Route::resource('buyers.transactions','Buyer\BuyerTransactionController',['only'=>['index']]);
-//Route::resource('buyers.products','Buyer\BuyerProductController',['only'=>['index']]);
-//Route::resource('buyers.sellers','Buyer\BuyerSellerController',['only'=>['index']]);
-//Route::resource('buyers.categories','Buyer\BuyerCategoryController',['only'=>['index']]);
-//
-//
-//
-//
-//
-//Route::resource('sellers','Seller\SellerController');
-//Route::resource('sellers.transactions','Seller\SellerTransactionController',['only'=>['index']]);
-//Route::resource('sellers.categories','Seller\SellerCategoryController',['only'=>['index']]);
-//Route::resource('sellers.buyers','Seller\SellerBuyerController',['only'=>['index']]);
-//Route::resource('sellers.products','Seller\SellerProductController',['except'=>['create','show','edit']]);
-///*
-// * Users
-// */
-//Route::resource('users','User\UserController');
-//Route::name('verify')->get('users/verify/{token}','User\UserController@verify');
-//Route::name('resend')->get('users/{user}/resend','User\UserController@resend');
-//
-//Route::post('oauth/token','\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken')->name('oauth.token');
-//Route::post('user/login','User\userController@login')->name('oauth.login');
-//Route::post('user/refresh_token','User\userController@getRefreshToken')->name('oauth.refresh');
-//Route::post('user/logout','User\userController@logout')->name('oauth.logout');

@@ -53,7 +53,7 @@ class User extends Authenticatable
 
 
     public function findForPassport($identifier) {
-        return User::orWhere('email', $identifier)->orWhere('phone_no', $identifier)->where('verified',1)->first();
+        return User::orWhere('email', $identifier)->orWhere('phone_no', $identifier)->where('verified',$this::VERIFIED_USER)->first();
     }
 
     public function comments()

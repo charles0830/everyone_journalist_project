@@ -15,7 +15,8 @@ class UserController extends ApiController
      */
     public function __construct()
     {
-       // $this->middleware('auth:api', ['only' => ['index']]);
+        $this->middleware('CheckUserOwnRequest', ['only' => ['update','destroy']]);
+
     }
 
     /**
@@ -134,7 +135,7 @@ class UserController extends ApiController
     public function destroy(User $user)
     {
         $user->delete();
-        $this->showOne($user);
+       return  $this->showOne($user);
     }
 
     public function verify($token)
@@ -164,12 +165,22 @@ class UserController extends ApiController
             'password' => 'required'
         ];
         $this->validate($request, $rules);
+
+        $user = User::where('email',$request->username)->Orwhere('phone_no',$request->username)->first();
+
+        if(!$user){
+           return  $this->errorResponse("User not found",401);
+        }
+        if($user->verified==User::UNVERIFIED_USER){
+            return $this->errorResponse("you are not verified resend mail and again verified",401);
+        }
+
         $client = new \GuzzleHttp\Client();
         $response = $client->post(route('oauth.token'), [
             'form_params' => [
                 'grant_type' => 'password',
-                'client_id' => env('client_id',3),
-                'client_secret' => env('client_secret','E51pmXN0efl2soSQUJpmW4M6WVFaamDlCXQCifnU'),
+                'client_id' => env('client_id',2),
+                'client_secret' => env('client_secret','EoI5mImtDRySqc89HiUJIorBhcIZct9V6Z6IwzCx'),
                 'username' => $request->username,
                 'password' => $request->password,
             ],
@@ -191,8 +202,8 @@ class UserController extends ApiController
             'form_params' => [
                 'grant_type' => 'refresh_token',
                 'refresh_token' => $request->token,
-                'client_id' => env('client_id'),
-                'client_secret' => env('client_secret'),
+                'client_id' => env('client_id',2),
+                'client_secret' => env('client_secret','EoI5mImtDRySqc89HiUJIorBhcIZct9V6Z6IwzCx'),
             ],
             'http_errors' => false //add this to return errors in json
         ]);

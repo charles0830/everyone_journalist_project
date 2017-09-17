@@ -13,10 +13,21 @@ use Illuminate\Support\Facades\Storage;
 class PostController extends ApiController
 {
     /**
+     * PostController constructor.
+     */
+    public function __construct()
+    {
+
+        $this->middleware('auth:api', ['except' => ['index','show']]);
+        // $this->middleware(['CheckUserOwnRequest'], ['only' => ['update','destroy']]);
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
+
     public function index()
     {
         $posts = Post::withCount('comments')->with('categories','user')->get();
@@ -57,7 +68,7 @@ class PostController extends ApiController
         if ($request->hasFile('cover_image')) {
             $data['cover_image'] = $request->cover_image->store('','post_images');
         }
-        $data['user_id'] = 1;
+        $data['user_id'] = $request->user()->id;
         $post = Post::create($data);
         return $this->showOne($post);
 
@@ -97,12 +108,18 @@ class PostController extends ApiController
      */
     public function update(Request $request, Post $post)
     {
+        if($request->user()->id != $post->user_id){
+            return $this->errorResponse("you are not authendicate to perform this operation",402);
+        }
         $rules = [
             'description' => 'min:20',
             'cover_image' => 'image'
         ];
 
         $this->validate($request, $rules);
+
+
+
         $post->fill($request->intersect([
             'title','description','cover_image'
         ]));
@@ -126,6 +143,9 @@ class PostController extends ApiController
      */
     public function destroy(Post $post)
     {
+        if(app()->request->user()->id != $post->user_id){
+            return $this->errorResponse("you are not authendicate to perform this operation",402);
+        }
         $post->delete();
         return $this->showOne($post);
     }

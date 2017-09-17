@@ -17,7 +17,7 @@ class PostCommentController extends ApiController
      */
     public function index()
     {
-        //
+
     }
 
     /**
@@ -45,7 +45,7 @@ class PostCommentController extends ApiController
         ];
         $this->validate($request, $rules);
         $data = $request->all();
-        $data['user_id'] = 1;
+        $data['user_id'] = $request->user()->id;
         $comment = $post->comments()->create($data);
         return $this->showOne($comment);
 
@@ -82,6 +82,10 @@ class PostCommentController extends ApiController
      */
     public function update(Request $request, Post $post,Comment $comment)
     {
+
+        if($request->user()->id!=$comment->user_id){
+            return $this->errorResponse("you are not authendicate to perform this operation",402);
+        }
         $comment->fill($request->intersect([
             'description'
         ]));
@@ -100,6 +104,9 @@ class PostCommentController extends ApiController
      */
     public function destroy(Post $post,Comment $comment)
     {
+        if(app()->request->user()->id!=$comment->user_id){
+            return $this->errorResponse("you are not authendicate to perform this operation",402);
+        }
         $comment->delete();
         return $this->showOne($comment);
     }

@@ -3,6 +3,7 @@
 namespace App\Http;
 
 
+use App\Http\Middleware\CheckUserOwnRequest;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -61,6 +62,7 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'customthrottle' => \App\Http\Middleware\CustomThrottleMiddleware::class,
-        'signature' => \App\Http\Middleware\SignatureMiddleware::class
+        'signature' => \App\Http\Middleware\SignatureMiddleware::class,
+        'CheckUserOwnRequest' => \App\Http\Middleware\CheckUserOwnRequest::class
     ];
 }
