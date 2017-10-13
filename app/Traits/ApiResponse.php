@@ -41,7 +41,7 @@ trait ApiResponse
 
         $transformer = $instance->transformer;
         $instance = $this->transformData($instance, $transformer);
-        return $this->successResponse($instance, $code);
+        return $this->successResponse($instance['data'], $code);
     }
 
     protected function showMessage($message, $code = 200)

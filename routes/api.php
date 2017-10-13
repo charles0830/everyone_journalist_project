@@ -32,9 +32,10 @@
 Route::post('registration', 'Api\User\UserController@store')->name('user.registration');
 Route::get('users/{user}/resend', 'Api\User\UserController@resend')->name('resend');
 Route::name('verify')->get('users/verify/{token}', 'Api\User\UserController@verify');
-Route::post('login', 'Api\User\userController@login')->name('oauth.login');
+Route::post('login', 'Api\User\UserController@login')->name('oauth.login');
 Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('users', 'Api\User\UserController', ['except' => 'store']);
+    Route::get('userinfo','Api\User\UserController@registerUserData');
 });
 
 Route::resource('posts', 'Api\Post\PostController');

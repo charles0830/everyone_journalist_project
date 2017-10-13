@@ -229,4 +229,11 @@ class UserController extends ApiController
         $accessToken->revoke();
         return  $this->showMessage("you are logout successfully",200);
     }
+
+
+    public function registerUserData()
+    {
+
+        return $this->showOne(request()->user(),200);
+    }
 }
