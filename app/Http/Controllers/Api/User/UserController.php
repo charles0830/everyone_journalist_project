@@ -8,6 +8,7 @@ use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
+use Intervention\Image\Facades\Image;
 
 class UserController extends ApiController
 {
@@ -16,7 +17,7 @@ class UserController extends ApiController
      */
     public function __construct()
     {
-        $this->middleware('CheckUserOwnRequest', ['only' => ['update','destroy']]);
+        $this->middleware('CheckUserOwnRequest', ['only' => ['update', 'destroy']]);
 
     }
 
@@ -46,7 +47,7 @@ class UserController extends ApiController
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -55,8 +56,8 @@ class UserController extends ApiController
             'name' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6|confirmed',
-            'phone_no'=>'required|min:10|numeric|unique:users',
-            'image_thumb'=>'sometimes|required|image'
+            'phone_no' => 'required|min:10|numeric|unique:users',
+            'image_thumb' => 'sometimes|required|image'
         ];
         $this->validate($request, $rules);
         $data = $request->all();
@@ -67,7 +68,7 @@ class UserController extends ApiController
         $data['admin'] = User::REGULAR_USER;
         if ($request->hasFile('image_thumb')) {
             $data['image_thumb'] = $request->image_thumb->store('');
-        }else{
+        } else {
             $data['image_thumb'] = null;
         }
         $user = User::create($data);
@@ -77,7 +78,7 @@ class UserController extends ApiController
     /**
      * Display the specified resource.
      *
-     * @param  \App\User  $user
+     * @param  \App\User $user
      * @return \Illuminate\Http\Response
      */
     public function show(User $user)
@@ -88,7 +89,7 @@ class UserController extends ApiController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\User  $user
+     * @param  \App\User $user
      * @return \Illuminate\Http\Response
      */
     public function edit(User $user)
@@ -99,16 +100,20 @@ class UserController extends ApiController
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\User  $user
+     * @param  \Illuminate\Http\Request $request
+     * @param  \App\User $user
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, User $user)
     {
         $rules = [
-            'email' => 'email|unique:users,' . $user->id,
-            'password' => 'min:6|confirmed'
+            'email' => 'sometimes|email|unique:users,' . $user->id,
+            'password' => 'sometimes|min:6|confirmed',
+            'cover_image' => 'sometimes|required|image',
+            'phone_no' => 'sometimes|min:10|numeric|unique:users,' . $user->phone_no,
         ];
+        $this->validate($request, $rules);
+
         if ($request->has('name')) {
             $user->name = $request->name;
         }
@@ -120,6 +125,23 @@ class UserController extends ApiController
         if ($request->has('password')) {
             $user->password = bcrypt($request->password);
         }
+
+
+        if ($request->has('cover_image')) {
+            $file = $request->file('cover_image');
+            $image = Image::make($file);
+            $image->encode('jpg', 50);
+            $fileName = uniqid('img_') . ".jpg";
+            $image->resize(300, 200, function ($constraint) {
+                $constraint->aspectRatio();
+            });
+            $image->save(public_path('img/'.$fileName));
+            $user->image_thumb = $fileName;
+        }
+
+
+
+
         if (!$user->isDirty()) {
             return $this->errorResponse('you need to specify a diffenrt value to update code', 422);
         }
@@ -130,13 +152,13 @@ class UserController extends ApiController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\User  $user
+     * @param  \App\User $user
      * @return \Illuminate\Http\Response
      */
     public function destroy(User $user)
     {
         $user->delete();
-       return  $this->showOne($user);
+        return $this->showOne($user);
     }
 
     public function verify($token)
@@ -147,6 +169,7 @@ class UserController extends ApiController
         $user->save();
         return $this->showMessage('The account has been verified successfully');
     }
+
     public function resend(User $user)
     {
         if ($user->isVerified()) {
@@ -154,7 +177,7 @@ class UserController extends ApiController
         }
         $user->verification_token = User::generateVerificationCode();
         $user->save();
-        if (env('APP_ENV' != 'local','local')) {
+        if (env('APP_ENV' != 'local', 'local')) {
             Mail::to($user)->send(new UserCreated($user));
         }
         return $this->showMessage("The verification email send");
@@ -169,29 +192,30 @@ class UserController extends ApiController
         ];
         $this->validate($request, $rules);
 
-        $user = User::where('email',$request->username)->Orwhere('phone_no',$request->username)->first();
+        $user = User::where('email', $request->username)->Orwhere('phone_no', $request->username)->first();
 
-        if(!$user){
-           return  $this->errorResponse("User not found",401);
+        if (!$user) {
+            return $this->errorResponse("User not found", 401);
         }
-        if($user->verified==User::UNVERIFIED_USER){
-            return $this->errorResponse("you are not verified resend mail and again verified",401);
+        if ($user->verified == User::UNVERIFIED_USER) {
+            return $this->errorResponse("you are not verified resend mail and again verified", 401);
         }
 
         $client = new \GuzzleHttp\Client();
         $response = $client->post(route('oauth.token'), [
             'form_params' => [
                 'grant_type' => 'password',
-                'client_id' => env('client_id',2),
-                'client_secret' => env('client_secret','EoI5mImtDRySqc89HiUJIorBhcIZct9V6Z6IwzCx'),
+                'client_id' => env('client_id', 2),
+                'client_secret' => env('client_secret', 'EoI5mImtDRySqc89HiUJIorBhcIZct9V6Z6IwzCx'),
                 'username' => $request->username,
                 'password' => $request->password,
             ],
             'http_errors' => false //add this to return errors in json
         ]);
         return $response;
-        // return  json_decode((string) $response->getBody(), true);
+        return json_decode((string)$response->getBody(), true);
     }
+
     public function getRefreshToken(Request $request)
     {
         $rules = [
@@ -205,8 +229,8 @@ class UserController extends ApiController
             'form_params' => [
                 'grant_type' => 'refresh_token',
                 'refresh_token' => $request->token,
-                'client_id' => env('client_id',2),
-                'client_secret' => env('client_secret','EoI5mImtDRySqc89HiUJIorBhcIZct9V6Z6IwzCx'),
+                'client_id' => env('client_id', 2),
+                'client_secret' => env('client_secret', 'EoI5mImtDRySqc89HiUJIorBhcIZct9V6Z6IwzCx'),
             ],
             'http_errors' => false //add this to return errors in json
         ]);
@@ -218,6 +242,7 @@ class UserController extends ApiController
 //            return json_encode(json_decode($e->getMessage()));
 //        }
     }
+
     public function logout(Request $request)
     {
         $accessToken = Auth::user()->token();
@@ -227,13 +252,13 @@ class UserController extends ApiController
                 'revoked' => true
             ]);
         $accessToken->revoke();
-        return  $this->showMessage("you are logout successfully",200);
+        return $this->showMessage("you are logout successfully", 200);
     }
 
 
     public function registerUserData()
     {
 
-        return $this->showOne(request()->user(),200);
+        return $this->showOne(request()->user(), 200);
     }
 }

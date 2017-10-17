@@ -7,12 +7,14 @@
     "require": {
         "php": ">=5.6.4",
         "doctrine/dbal": "^2.5",
+        "fzaninotto/faker": "~1.4",
         "guzzlehttp/guzzle": "~6.0",
+        "intervention/image": "^2.4",
+        "intervention/imagecache": "^2.3",
         "laravel/framework": "5.4.*",
-        "laravel/passport": "^2.0",
+        "laravel/passport": "^4.0",
         "laravel/tinker": "~1.0",
-        "spatie/laravel-fractal": "^4.0",
-        "fzaninotto/faker": "~1.4"
+        "spatie/laravel-fractal": "^4.0"
     },
     "require-dev": {
 

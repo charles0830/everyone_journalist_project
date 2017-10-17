@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
+
 
 class PostController extends ApiController
 {
@@ -63,11 +65,25 @@ class PostController extends ApiController
         ];
         $this->validate($request, $rules);
 
+
         $data = $request->all();
 
-        if ($request->hasFile('cover_image')) {
-            $data['cover_image'] = $request->cover_image->store('','post_images');
-        }
+        $file = $request->file('cover_image');
+        $image = Image::make($file);
+        $image->encode('jpg',50);
+
+
+        $fileName = uniqid('img_').".jpg";
+       // $image->c
+        $image->save(public_path('img/'.$fileName));
+//        $image->resize(300, 200, function ($constraint) {
+//            $constraint->aspectRatio();
+//        });
+//        // save resized
+//        $image->save(public_path('img/'."resize.png"));
+        $data['cover_image'] = $fileName;
+
+
         $data['user_id'] = $request->user()->id;
         $post = Post::create($data);
         return $this->showOne($post);

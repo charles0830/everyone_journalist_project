@@ -66,6 +66,11 @@ return [
             'root' => public_path('img/post'),
             'visibility' => 'public',
         ],
+        'user_images' => [
+            'driver' => 'local',
+            'root' => public_path('img/user'),
+            'visibility' => 'public',
+        ],
 
         's3' => [
             'driver' => 's3',
