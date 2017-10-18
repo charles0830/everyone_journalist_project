@@ -13,7 +13,7 @@ class UserMailChanged extends Mailable
     /**
      * @var User
      */
-    private $user;
+    public $user;
 
     /**
      * Create a new message instance.

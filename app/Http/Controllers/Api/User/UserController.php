@@ -107,15 +107,18 @@ class UserController extends ApiController
     public function update(Request $request, User $user)
     {
         $rules = [
-            'email' => 'sometimes|email|unique:users,' . $user->id,
+            'email' => 'sometimes|email|unique:users',
             'password' => 'sometimes|min:6|confirmed',
             'cover_image' => 'sometimes|required|image',
-            'phone_no' => 'sometimes|min:10|numeric|unique:users,' . $user->phone_no,
+            'phone_no' => 'sometimes|min:10|numeric|unique:users,phone_no',
         ];
         $this->validate($request, $rules);
 
         if ($request->has('name')) {
             $user->name = $request->name;
+        }
+        if ($request->has('phone_no')) {
+            $user->phone_no = $request->phone_no;
         }
         if ($request->has('email') && $user->email != $request->email) {
             $user->verified = User::UNVERIFIED_USER;

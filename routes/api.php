@@ -35,6 +35,7 @@ Route::name('verify')->get('users/verify/{token}', 'Api\User\UserController@veri
 Route::post('login', 'Api\User\UserController@login')->name('oauth.login');
 Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('users', 'Api\User\UserController', ['except' => 'store']);
+    Route::resource('users.posts', 'Api\User\UserPostController', ['only' => 'index']);
     Route::get('userinfo','Api\User\UserController@registerUserData');
 });
 
