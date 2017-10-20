@@ -27,6 +27,7 @@ trait ApiResponse
             return $this->successResponse(['data' => $collection], $code);
         }
         $transformer = $collection->first()->transformer;
+       // dd($transformer);
         $collection = $this->orderBy($collection);
         $collection = $this->filterData($collection, $transformer);
         $collection = $this->sortData($collection, $transformer);
@@ -77,17 +78,21 @@ trait ApiResponse
 
     protected function paginate(Collection $collection)
     {
+       // dd($collection);
         $rules = [
             'per_page' => 'integer|min:2|max:50'
         ];
         Validator::validate(request()->all(), $rules);
+
         $page = LengthAwarePaginator::resolveCurrentPage();
+
         $perPage = config('my_conf.pagination_limit');
         if (request()->has('per_page')) {
             $perPage = (int)request()->per_page;
         }
         $result = $collection->slice(($page - 1) * $perPage, $perPage)->values();
-        $paginated = new LengthAwarePaginator($result, $collection->count(), $perPage, $page, [
+
+        $paginated = new LengthAwarePaginator($result, count($collection), $perPage, $page, [
             'path' => LengthAwarePaginator::resolveCurrentPath(),
         ]);
         $paginated->appends(request()->all());

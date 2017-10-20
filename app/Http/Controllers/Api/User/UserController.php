@@ -264,4 +264,36 @@ class UserController extends ApiController
 
         return $this->showOne(request()->user(), 200);
     }
+
+
+    public function update_cover(Request $request, User $user){
+        $rules = [
+            'cover_image' => 'sometimes|required|image',
+        ];
+        $this->validate($request, $rules);
+
+//dd($request->all());hasFile
+
+
+        if ($request->hasFile('cover_image')) {
+            $file = $request->file('cover_image');
+            $image = Image::make($file);
+            $image->encode('jpg', 50);
+            $fileName = uniqid('img_') . ".jpg";
+            $image->resize(300, 200, function ($constraint) {
+                $constraint->aspectRatio();
+            });
+            $image->save(public_path('img/'.$fileName));
+            $user->image_thumb = $fileName;
+        }
+
+
+
+
+        if (!$user->isDirty()) {
+            return $this->errorResponse('you need to specify a diffenrt value to update code', 422);
+        }
+        $user->save();
+        return $this->showOne($user);
+    }
 }

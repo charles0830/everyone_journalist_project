@@ -20,6 +20,7 @@ class UserTransformer extends TransformerAbstract
             'id' => (int) $user->id,
             'name' => (string) $user->name,
             'email' => (string) $user->email,
+            'phone_no' => (string) $user->phone_no,
             'isVerified' => (int) $user->verified,
             'isAdmin' => ($user->admin==='true'),
             'large_cover'=>route('imagecache',['large',$user->image_thumb]),

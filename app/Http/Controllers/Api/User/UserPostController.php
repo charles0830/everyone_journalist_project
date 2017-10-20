@@ -16,7 +16,13 @@ class UserPostController extends ApiController
      */
     public function index(User $user)
     {
-        $posts = $user->posts;
+        $posts = $user->posts()
+            ->withCount('comments')
+            ->with('categories','user')
+            ->get();
+     //   return $posts;
+
+
         return $this->showAll($posts);
     }
 

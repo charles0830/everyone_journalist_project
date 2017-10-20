@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Post;
 
 use App\Http\Controllers\ApiController;
 use App\Post;
+use App\User;
 use function GuzzleHttp\Promise\all;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -86,6 +87,13 @@ class PostController extends ApiController
 
         $data['user_id'] = $request->user()->id;
         $post = Post::create($data);
+        $notifyUser= User::all()->except($request->user()->id)->pluck('device_token')->toArray();
+        $notificationInformation = [
+            'title'=> 'Hurray!! new post created',
+            'body' => $post->title." created by ".$request->user()->name,
+            'type' =>'post'
+        ];
+        sendPushNotification($notifyUser,$notificationInformation);
         return $this->showOne($post);
 
 

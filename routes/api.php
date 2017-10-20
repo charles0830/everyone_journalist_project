@@ -37,6 +37,8 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('users', 'Api\User\UserController', ['except' => 'store']);
     Route::resource('users.posts', 'Api\User\UserPostController', ['only' => 'index']);
     Route::get('userinfo','Api\User\UserController@registerUserData');
+    //update_cover
+    Route::post('users/{user}/update_cover','Api\User\UserController@update_cover');
 });
 
 Route::resource('posts', 'Api\Post\PostController');

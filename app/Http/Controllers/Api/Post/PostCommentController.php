@@ -47,6 +47,16 @@ class PostCommentController extends ApiController
         $data = $request->all();
         $data['user_id'] = $request->user()->id;
         $comment = $post->comments()->create($data);
+
+
+
+        $notifyUser= User::all()->except($request->user()->id)->pluck('device_token')->toArray();
+        $notificationInformation = [
+            'title'=> 'Hurray!! new comment created',
+            'body' => $request->user()->name ." comment now",
+            'type' =>'post'
+        ];
+        sendPushNotification($notifyUser,$notificationInformation);
         return $this->showOne($comment);
 
     }
